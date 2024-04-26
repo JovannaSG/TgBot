@@ -7,10 +7,6 @@ import requests
 import math
 
 
-"""
-TODO: Команду погоды ломает /weather 2
-"""
-
 router = Router()
 
 # it is necessary to display words in the form of emojis
@@ -30,13 +26,14 @@ async def get_weather(message: Message, command: CommandObject):
     # check command's args and get request for weather forecast and print it
 
     city_name = command.args
-    if city_name is None:
+    if city_name is None or not city_name.isalpha():
+        print(type(city_name))
         await message.reply(
             "Ошибка: неправильный формат команды." +
             "\nПример: /weather {название города}"
         )
     else:
-        print(city_name)
+        print(type(city_name))
 
         response = requests.get(
             "http://api.openweathermap.org/data/2.5/weather?q={}&lang=ru&units=metric&appid=4ba714d9111450e5537f17134b7235e4"
