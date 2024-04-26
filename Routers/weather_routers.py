@@ -1,22 +1,17 @@
-import asyncio
-import logging
-from aiogram import Bot, Dispatcher, types
+from aiogram import Router
 from aiogram.filters import Command, CommandObject
+from aiogram.types import Message
 
 import datetime
 import requests
 import math
 
-from config import config
 
+"""
+TODO: Команду погоды ломает /weather 2
+"""
 
-# We turn on logging so as not to miss important messages
-logging.basicConfig(level=logging.INFO)
-bot = Bot(
-    token=config.bot_token.get_secret_value(),
-    parse_mode="HTML"
-)
-dp = Dispatcher()
+router = Router()
 
 # it is necessary to display words in the form of emojis
 code_to_smile = {
@@ -30,21 +25,8 @@ code_to_smile = {
 }
 
 
-# Handler on command /start
-@dp.message(Command("start"))
-async def start_command(message: types.Message):
-    await bot.send_message(
-        "2057150545",
-        "ID: " + str(message.from_user.id) +
-        "\nfirst_name: " + str(message.from_user.first_name) +
-        "\nlast_name: " + str(message.from_user.last_name) +
-        "\nusername: " + str(message.from_user.username)
-    )
-    await message.answer("Hello!")
-
-
-@dp.message(Command("weather"))
-async def get_weather(message: types.Message, command: CommandObject):
+@router.message(Command("weather"))
+async def get_weather(message: Message, command: CommandObject):
     # check command's args and get request for weather forecast and print it
 
     city_name = command.args
@@ -94,24 +76,3 @@ async def get_weather(message: types.Message, command: CommandObject):
             f"Продолжительность дня: {length_of_the_day}\n" +
             f"Хорошего дня!"
         )
-
-
-@dp.message(Command("user_info"))
-async def user_info(message: types.Message):
-    await message.reply(
-        "Информация о вас:" +
-        "\nID: " + str(message.from_user.id) +
-        "\nfirst_name: " + str(message.from_user.first_name) + 
-        "\nlast_name: " + str(message.from_user.last_name) +
-        "\nusername: " + str(message.from_user.username)
-    )
-
-
-# Запуск процесса поллинга новых апдейтов
-async def main():
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
