@@ -32,7 +32,7 @@ async def start_command(message: types.Message):
 # start polling and new updates
 async def main():
     await bot.delete_webhook(drop_pending_updates=True)
-    dp.include_router(
+    dp.include_routers(
         weather_routers.router,
         main_routers.router
     )
