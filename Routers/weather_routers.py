@@ -8,7 +8,6 @@ import math
 
 
 router = Router()
-
 # it is necessary to display words in the form of emojis
 code_to_smile = {
     "Clear": "Ясно \U00002600",
@@ -24,7 +23,6 @@ code_to_smile = {
 @router.message(Command("weather"))
 async def get_weather(message: Message, command: CommandObject):
     # check command's args and get request for weather forecast and print it
-
     city_name = command.args
     if city_name is None or not city_name.isalpha():
         print(type(city_name))
