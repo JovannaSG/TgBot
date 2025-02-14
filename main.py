@@ -1,7 +1,9 @@
 import asyncio
 import logging
+
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
+from aiogram.client.default import DefaultBotProperties
 
 from config import config
 from Routers import weather_routers, main_routers
@@ -11,7 +13,7 @@ from Routers import weather_routers, main_routers
 logging.basicConfig(level=logging.INFO)
 bot = Bot(
     token=config.bot_token.get_secret_value(),
-    parse_mode="HTML"
+    default=DefaultBotProperties(parse_mode="HTML")
 )
 dp = Dispatcher()
 
