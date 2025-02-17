@@ -57,7 +57,7 @@ async def get_weather(message: Message, command: CommandObject):
 
         # Send weather forecast to user
         await message.reply(
-            f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n" +
+            f"{datetime.now().strftime('%Y-%m-%d %H:%M')}\n" +
             f"Погода в городе: {city}\nТемпература: {cur_temp}°C {wd}\n" +
             f"Влажность: {humidity}%\n" +
             f"Давление: {math.ceil(pressure/1.333)} мм.рт.ст\n" +
