@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 
-import datetime
+from datetime import datetime
 import requests
 import math
 
@@ -20,9 +20,9 @@ code_to_smile = {
 }
 
 
-@router.message(Command("weather"))
+@router.message(Command("weather", prefix="/"))
 async def get_weather(message: Message, command: CommandObject):
-    # check command's args and get request for weather forecast and print it
+    # check command's args
     city_name = command.args
     if city_name is None or not city_name.isalpha():
         print(type(city_name))
@@ -32,7 +32,7 @@ async def get_weather(message: Message, command: CommandObject):
         )
     else:
         print(type(city_name))
-
+        # get request for weather forecast
         response = requests.get(
             "http://api.openweathermap.org/data/2.5/weather?q={}&lang=ru&units=metric&appid=4ba714d9111450e5537f17134b7235e4"
             .format(city_name)
@@ -44,22 +44,18 @@ async def get_weather(message: Message, command: CommandObject):
         pressure = data["main"]["pressure"]
         wind = data["wind"]["speed"]
 
-        sunrise_timestamp = datetime.datetime.fromtimestamp(
-            data["sys"]["sunrise"]
-        )
-        sunset_timestamp = datetime.datetime.fromtimestamp(
-            data["sys"]["sunset"]
-        )
-        length_of_the_day = datetime.datetime.fromtimestamp(
-            data["sys"]["sunset"]
-        ) - datetime.datetime.fromtimestamp(data["sys"]["sunrise"])
+        sunrise_timestamp = datetime.fromtimestamp(data["sys"]["sunrise"])
+        sunset_timestamp = datetime.fromtimestamp(data["sys"]["sunset"])
+        length_of_the_day = datetime.fromtimestamp(data["sys"]["sunset"]) - \
+            datetime.fromtimestamp(data["sys"]["sunrise"])
         weather_description = data["weather"][0]["main"]
 
         if weather_description in code_to_smile:
             wd = code_to_smile[weather_description]
         else:
-            wd = "Отсутсвует эмодзи для отображения погоды"
+            wd = "Don't have emojies for forecast display"
 
+        # Send weather forecast to user
         await message.reply(
             f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n" +
             f"Погода в городе: {city}\nТемпература: {cur_temp}°C {wd}\n" +

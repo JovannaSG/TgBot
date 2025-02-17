@@ -1,0 +1,18 @@
+F.photo                                    # Фильтр для фото
+F.voice                                    # Фильтр для голосовых сообщений
+F.content_type.in_({ContentType.PHOTO,
+                    ContentType.VOICE,
+                    ContentType.VIDEO})    # Фильтр на несколько типов контента
+F.text == 'привет'                         # Фильтр на полное совпадение текста
+F.text.startswith('привет')                # Фильтр на то, что текст сообщения начинается с 'привет'
+F.text.endswith('bot')                    # Инвертирование результата фильтра
+
+
+lambda message: message.photo                        # Фильтр для фото
+lambda message: message.voice                        # Фильтр для голосовых сообщений
+lambda message: message.content_type in {ContentType.PHOTO,
+                                         ContentType.VOICE,
+                                         ContentType.VIDEO}   # Фильтр на несколько типов контента
+lambda message: message.text == 'привет'             # Фильтр на полное совпадение текста
+lambda message: message.text.startswith('привет')    # Фильтр на то, что текст сообщения начинается с 'привет'
+lambda message: not message.text.endswith('bot')   # Инвертирование результата фильтра

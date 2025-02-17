@@ -1,12 +1,11 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 
-from config import config
 from Routers import weather_routers, main_routers
+from config import config
 
 
 # We turn on logging so as not to miss important messages
@@ -16,19 +15,6 @@ bot = Bot(
     default=DefaultBotProperties(parse_mode="HTML")
 )
 dp = Dispatcher()
-
-
-# Handler on command /start
-@dp.message(Command("start"))
-async def start_command(message: types.Message):
-    await bot.send_message(
-        "2057150545",
-        "ID: " + str(message.from_user.id) +
-        "\nfirst_name: " + str(message.from_user.first_name) +
-        "\nlast_name: " + str(message.from_user.last_name) +
-        "\nusername: " + str(message.from_user.username)
-    )
-    await message.answer("Hello!")
 
 
 # start polling and new updates
