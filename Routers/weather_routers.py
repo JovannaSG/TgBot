@@ -1,11 +1,15 @@
-from aiogram import Router
-from aiogram.filters import Command, CommandObject
+from aiogram import Router, types, F 
+from aiogram.filters import Command
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
+from aiogram.filters import StateFilter
+from aiogram.fsm.state import default_state, State, StatesGroup
 
 from datetime import datetime
 import requests
 import math
 
+from Keyboards.exit_keyboards import keyboard
 
 router = Router()
 # it is necessary to display words in the form of emojis
@@ -20,23 +24,49 @@ code_to_smile = {
 }
 
 
-@router.message(Command("weather", prefix="/"))
-async def get_weather(message: Message, command: CommandObject):
-    # check command's args
-    city_name = command.args
-    if city_name is None or not city_name.isalpha():
-        print(type(city_name))
+class FSMChooseCity(StatesGroup):
+    # Creating instances of the State class, sequentially
+    # listing the possible states it will be in
+    # bot at different moments of user interaction
+    city_choice_state = State()
+
+
+@router.message(Command("weather", prefix="/"), StateFilter(default_state))
+async def get_weather(
+    message: Message,
+    state: FSMContext
+):
+    await message.answer(
+        text="Введите название города",
+        reply_markup=keyboard
+    )
+    await state.set_state(FSMChooseCity.city_choice_state)
+
+
+@router.callback_query(F.data == "close_weather_foreacast")
+async def send_random_value(
+    callback: types.CallbackQuery,
+    state: FSMContext
+):
+    await state.set_state(default_state)
+    await callback.message.answer(text="Выберите действие")
+    await callback.answer()
+
+
+@router.message(StateFilter(FSMChooseCity.city_choice_state))
+async def print_weather_forecast(message: types.Message, state: FSMContext):
+    city_name = message.text
+    # get request for weather forecast
+    response = requests.get(
+        "http://api.openweathermap.org/data/2.5/weather?q={}&lang=ru&units=metric&appid=4ba714d9111450e5537f17134b7235e4"
+        .format(city_name)
+    )
+    if response.status_code != 200:
         await message.reply(
-            "Ошибка: неправильный формат команды." +
-            "\nПример: /weather {название города}"
+            text="Ошибка: неправильный ввод названия, повторите еще раз",
+            reply_markup=keyboard
         )
     else:
-        print(type(city_name))
-        # get request for weather forecast
-        response = requests.get(
-            "http://api.openweathermap.org/data/2.5/weather?q={}&lang=ru&units=metric&appid=4ba714d9111450e5537f17134b7235e4"
-            .format(city_name)
-        )
         data = response.json()
         city = data["name"]
         cur_temp = data["main"]["temp"]
@@ -65,5 +95,6 @@ async def get_weather(message: Message, command: CommandObject):
             f"Восход солнца: {sunrise_timestamp}\n" +
             f"Закат солнца: {sunset_timestamp}\n" +
             f"Продолжительность дня: {length_of_the_day}\n" +
-            f"Хорошего дня!"
+            f"Хорошего времени суток!"
         )
+        await state.set_state(default_state)

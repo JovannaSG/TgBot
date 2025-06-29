@@ -15,7 +15,7 @@ async def start_command(message: types.Message):
         "\nlast_name: " + str(message.from_user.last_name) +
         "\nusername: " + str(message.from_user.username)
     )
-    await message.answer("Hello!")
+    await message.answer("Выберите действие")
 
 
 @router.message(Command("user_info", prefix="/"))
