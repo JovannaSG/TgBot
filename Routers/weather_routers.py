@@ -35,7 +35,7 @@ class FSMChooseCity(StatesGroup):
 async def get_weather(
     message: Message,
     state: FSMContext
-):
+) -> None:
     await message.answer(
         text="Введите название города",
         reply_markup=keyboard
@@ -43,18 +43,22 @@ async def get_weather(
     await state.set_state(FSMChooseCity.city_choice_state)
 
 
+# catch callback data, when keyboard button was clicked
 @router.callback_query(F.data == "close_weather_foreacast")
-async def send_random_value(
+async def back_to_main(
     callback: types.CallbackQuery,
     state: FSMContext
-):
+) -> None:
     await state.set_state(default_state)
     await callback.message.answer(text="Выберите действие")
     await callback.answer()
 
 
 @router.message(StateFilter(FSMChooseCity.city_choice_state))
-async def print_weather_forecast(message: types.Message, state: FSMContext):
+async def print_weather_forecast(
+    message: types.Message,
+    state: FSMContext
+) -> None:
     city_name = message.text
     # get request for weather forecast
     response = requests.get(
@@ -67,6 +71,7 @@ async def print_weather_forecast(message: types.Message, state: FSMContext):
             reply_markup=keyboard
         )
     else:
+        # parse json data
         data = response.json()
         city = data["name"]
         cur_temp = data["main"]["temp"]
