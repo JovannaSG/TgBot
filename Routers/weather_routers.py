@@ -1,4 +1,4 @@
-from aiogram import Router, types, F 
+from aiogram import Router, types, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
@@ -9,7 +9,7 @@ from datetime import datetime
 import requests
 import math
 
-from Keyboards.exit_keyboards import keyboard
+from Keyboards.exitKeyboards import keyboard
 
 router = Router()
 # it is necessary to display words in the form of emojis
@@ -31,8 +31,11 @@ class FSMChooseCity(StatesGroup):
     city_choice_state = State()
 
 
-@router.message(Command("weather", prefix="/"), StateFilter(default_state))
-async def get_weather(
+@router.message(
+    F.text == "Получить прогноз погоды🌤️",
+    StateFilter(default_state)
+)
+async def get_weather_(
     message: Message,
     state: FSMContext
 ) -> None:
@@ -43,15 +46,16 @@ async def get_weather(
     await state.set_state(FSMChooseCity.city_choice_state)
 
 
-# catch callback data, when keyboard button was clicked
-@router.callback_query(F.data == "close_weather_foreacast")
-async def back_to_main(
-    callback: types.CallbackQuery,
+@router.message(Command("weather", prefix="/"), StateFilter(default_state))
+async def get_weather(
+    message: Message,
     state: FSMContext
 ) -> None:
-    await state.set_state(default_state)
-    await callback.message.answer(text="Выберите действие")
-    await callback.answer()
+    await message.answer(
+        text="Введите название города",
+        reply_markup=keyboard
+    )
+    await state.set_state(FSMChooseCity.city_choice_state)
 
 
 @router.message(StateFilter(FSMChooseCity.city_choice_state))

@@ -4,9 +4,12 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 
-from Routers import weather_routers, main_routers
+from Routers import (
+    weather_routers, main_routers,
+    # prikol_router,
+    joke_router
+)
 from config import config
-
 
 # We turn on logging so as not to miss important messages
 logging.basicConfig(level=logging.INFO)
@@ -22,7 +25,9 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     dp.include_routers(
         weather_routers.router,
-        main_routers.router
+        main_routers.router,
+        # prikol_router.router,
+        joke_router.router
     )
     await dp.start_polling(bot)
 

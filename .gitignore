@@ -4,3 +4,5 @@ venv/
 .venv/
 .vscode/
 .env
+/Routers/prikol_router.py
+/test.py

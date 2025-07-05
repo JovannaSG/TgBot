@@ -5,7 +5,7 @@ buttons = [
     [
         types.InlineKeyboardButton(
             text="Вернуться назад",
-            callback_data="close_weather_foreacast"
+            callback_data="back_to_default_state"
         )
     ]
 ]
