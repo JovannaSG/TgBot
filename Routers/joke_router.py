@@ -37,7 +37,7 @@ async def process_category(message: types.Message, state: FSMContext):
     category_map: dict = {
         "Любые": "Any",
         "Программистские": "Programming",
-        "Разнообраные": "Misc",  # Miscellaneous
+        "Разнообразные": "Misc",  # Miscellaneous
         "Черные": "Dark",
         "Каламбурные": "Pun",
         "Жуткие": "Spooky",

@@ -3,13 +3,13 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 # Keyboard for selecting a category
 categories_keyboard = ReplyKeyboardMarkup(
     keyboard=[
+        [KeyboardButton(text="Любые")],
         [KeyboardButton(text="Программистские")],
-        [KeyboardButton(text="Обычные")],
+        [KeyboardButton(text="Разнообразные")],
         [KeyboardButton(text="Черные")],
         [KeyboardButton(text="Каламбурные")],
         [KeyboardButton(text="Жуткие")],
         [KeyboardButton(text="Новогодние")],
-        [KeyboardButton(text="Любые")],
         [KeyboardButton(text="Отмена")]
     ],
     resize_keyboard=True
