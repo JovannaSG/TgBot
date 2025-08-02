@@ -7,7 +7,7 @@ from aiogram.client.default import DefaultBotProperties
 from Routers import (
     weather_routers, main_routers,
     # prikol_router,
-    joke_router
+    joke_router, yoomoney_router
 )
 from config import config
 
@@ -27,7 +27,8 @@ async def main():
         weather_routers.router,
         main_routers.router,
         # prikol_router.router,
-        joke_router.router
+        joke_router.router,
+        yoomoney_router.router
     )
     await dp.start_polling(bot)
 
